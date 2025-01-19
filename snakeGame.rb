@@ -69,7 +69,11 @@ class Screen < Gosu::Window
       if rangeColor('PLAY', 280, 150, @mouse_x, @mouse_y)
         @font_text2.draw_markup("<c=#@yellow>PLAY</c>", 280, 150, 1)
         if clicked(Gosu::MS_LEFT)
-          @sit = 1
+          if $parm[4] == 1
+            @sit = 1
+          else
+            @page = 5
+          end
         end
       else
         @font_text2.draw_markup("<c=#@green>PLAY</c>", 280, 150, 1)
@@ -237,6 +241,65 @@ class Screen < Gosu::Window
       end
     end
 
+    def screenfive()
+      if rangeColor('EXIT', 1, 1, @mouse_x, @mouse_y)
+        @font_text2.draw_markup("<c=#@yellow>EXIT</c>", 1, 1, 1)
+        if clicked(Gosu::MS_LEFT)
+          @page = 1
+        end
+      elsif
+        @font_text2.draw_markup("<c=#@green>EXIT</c>", 1, 1, 1)
+      end
+
+      if $parm[4] >= 1
+        if rangeColor('EASY', 275, 100, @mouse_x, @mouse_y)
+          @font_text2.draw_markup("<c=#@yellow>EASY</c>", 275, 100, 1)
+          if clicked(Gosu::MS_LEFT)
+            @level = 1
+          end
+        elsif @level == 1
+          @font_text2.draw_markup("<c=#@red>EASY</c>", 275, 100, 1)
+        else
+          @font_text2.draw_markup("<c=#@green>EASY</c>", 275, 100, 1)
+        end
+      end
+
+      if $parm[4] >= 2
+        if rangeColor('MEDIUM', 260, 150, @mouse_x, @mouse_y)
+          @font_text2.draw_markup("<c=#@yellow>MEDIUM</c>", 260, 150, 1)
+          if clicked(Gosu::MS_LEFT)
+            @level = 2
+          end
+        elsif @level == 2
+          @font_text2.draw_markup("<c=#@red>MEDIUM</c>", 260, 150, 1)
+        else
+          @font_text2.draw_markup("<c=#@green>MEDIUM</c>", 260, 150, 1)
+        end
+      end
+
+      if $parm[4] >= 3
+        if rangeColor('HARD', 275, 200, @mouse_x, @mouse_y)
+          @font_text2.draw_markup("<c=#@yellow>HARD</c>", 275, 200, 1)
+          if clicked(Gosu::MS_LEFT)
+            @level = 3
+          end
+        elsif @level == 3
+          @font_text2.draw_markup("<c=#@red>HARD</c>", 275, 200, 1)
+        else
+          @font_text2.draw_markup("<c=#@green>HARD</c>", 275, 200, 1)
+        end
+      end
+
+      if rangeColor('GO', 290, 250, @mouse_x, @mouse_y)
+        @font_text2.draw_markup("<c=#@yellow>GO</c>", 290, 250, 1)
+        if clicked(Gosu::MS_LEFT)
+          @sit = 1
+        end
+      else
+        @font_text2.draw_markup("<c=#@green>GO</c>", 290, 250, 1)
+      end
+    end
+
   end
   
   def draw
@@ -252,6 +315,9 @@ class Screen < Gosu::Window
 
     elsif @page == 4
       screenFour()
+    
+    elsif @page == 5
+      screenfive()
     end
       
   end
@@ -290,11 +356,7 @@ class SnakeGame < Gosu::Window
     @wallRIGHT = [width - 20, 0, 20, height + 160]
     @level = lvl
     @limit = (((width / @speed) * (height / @speed)) / @radius).to_i
-    if lvl == 1
-      lvl = 0
-    else
-      lvl = lvl * 10
-    end
+    lvl = lvl * 10
     self.update_interval = (160 - ((Rational((160 / (18 * 8.4))).to_f * ((width * height) / 10000).to_f).round - 160)) - lvl              
     @list_pos ||= []
     @list_size = 0
@@ -362,6 +424,7 @@ class SnakeGame < Gosu::Window
     end
     if @y - @speed < @wallUP[1] || @y + @speed > @wallDOWN[1] || @x - @speed < @wallLEFT[0] || @x + @speed > @wallRIGHT[0]
       Screen.new.show
+      close
     end
 
 
@@ -369,6 +432,7 @@ class SnakeGame < Gosu::Window
       for i in @list_pos
         if @x >= i[0] - @speed / 2 && @x <= i[0] + @speed / 2 && @y >= i[1] - @speed / 2 && @y <= i[1] + @speed / 2
           Screen.new.show
+          close
         end
       end
     end
